@@ -30,7 +30,7 @@ sgdisk -n 2:0:+550M -t 2:ef00 $TARGET_DISK
 verbose "Created EFI partition (550M, type ef00)."
 
 sgdisk -n 3:0:0 -t 3:8309 $TARGET_DISK
-verbose "Created root partition (remaining space, type 8309)."
+verbose "Created LUKS partition (remaining space, type 8309)."
 
 sync
 verbose "Partitioning of $TARGET_DISK complete."
