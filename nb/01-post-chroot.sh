@@ -69,7 +69,6 @@ initrd  /amd-ucode.img
 initrd  /initramfs-linux-fallback.img
 options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 ipv6.disable=1" > /boot/loader/entries/arch-fallback.conf
 
-bootctl update
 verbose "Bootloader installed and configured."
 
 # Create pacman hook for systemd-boot
@@ -93,7 +92,7 @@ verbose "Mirrorlist updated."
 
 # Install essential packages
 verbose "Installing essential packages."
-pacman -S --noconfirm plasma-desktop ttf-dejavu breeze breeze-gtk kde-gtk-config xdg-user-dirs sddm sddm-kcm konsole plasma-nm plasma-pa pulseaudio pulseaudio-bluetooth powerdevil firewalld ipset thunderbird firefox plasma-browser-integration kwallet-pam kwalletmanager kinfocenter keepassxc bluez bluez-utils bluedevil networkmanager-vpnc dolphin dolphin-plugins ark htop gimp kate vlc libreoffice-fresh print-manager gwenview okular spectacle gparted ntfs-3g yakuake git nm-connection-editor acpid dbus avahi cups nss-mdns chrony plasma-systemmonitor kscreen
+pacman -S plasma-desktop ttf-dejavu breeze breeze-gtk kde-gtk-config xdg-user-dirs sddm sddm-kcm konsole plasma-nm plasma-pa pulseaudio pulseaudio-bluetooth powerdevil firewalld ipset thunderbird firefox plasma-browser-integration kwallet-pam kwalletmanager kinfocenter keepassxc bluez bluez-utils bluedevil networkmanager-vpnc dolphin dolphin-plugins ark htop gimp kate vlc libreoffice-fresh print-manager gwenview okular spectacle gparted ntfs-3g yakuake git nm-connection-editor acpid dbus avahi cups nss-mdns chrony plasma-systemmonitor kscreen
 verbose "Essential packages installed."
 
 # Configure services
@@ -132,7 +131,7 @@ verbose "Time synchronization configured with chrony."
 
 # Install Mesa drivers and configure
 verbose "Installing Mesa drivers."
-pacman -S --noconfirm mesa
+pacman -S mesa
 verbose "Mesa drivers installed."
 
 sed -i 's/^MODULES=.*/MODULES=(amdgpu)/' /etc/mkinitcpio.conf
@@ -140,7 +139,7 @@ mkinitcpio -P
 
 # Install additional packages
 verbose "Installing additional packages."
-pacman -S --noconfirm plasma-workspace xorg-xwayland
+pacman -S plasma-workspace xorg-xwayland
 verbose "Additional packages installed."
 
 # Set environment variables in /etc/security/pam_env.conf

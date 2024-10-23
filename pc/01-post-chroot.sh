@@ -35,7 +35,7 @@ verbose "/etc/hosts configured."
 
 # Generate initramfs
 verbose "Editing /etc/mkinitcpio.conf and generating initramfs."
-sed -i 's/^HOOKS=.*/HOOKS=(base systemd autodetect microcode modconf kms keyboard sd-vconsole block sd-encrypt lvm2 filesystems fsck)/' /etc/mkinitcpio.conf
+sed -i 's/^HOOKS=.*/HOOKS=(base systemd autodetect microcode modconf keyboard sd-vconsole block sd-encrypt lvm2 filesystems fsck)/' /etc/mkinitcpio.conf
 mkinitcpio -P
 verbose "Initramfs generated."
 
@@ -69,7 +69,6 @@ initrd  /amd-ucode.img
 initrd  /initramfs-linux-fallback.img
 options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 nvidia_drm.modeset=1 nvidia_drm.fbdev=1 ipv6.disable=1" > /boot/loader/entries/arch-fallback.conf
 
-bootctl update
 verbose "Bootloader installed and configured."
 
 # Create pacman hook for systemd-boot
@@ -93,7 +92,7 @@ verbose "Mirrorlist updated."
 
 # Install essential packages
 verbose "Installing essential packages."
-pacman -S --noconfirm plasma-desktop ttf-dejavu breeze breeze-gtk kde-gtk-config xdg-user-dirs sddm sddm-kcm konsole plasma-nm plasma-pa pulseaudio pulseaudio-bluetooth powerdevil firewalld ipset thunderbird firefox plasma-browser-integration kwallet-pam kwalletmanager kinfocenter keepassxc bluez bluez-utils bluedevil networkmanager-vpnc dolphin dolphin-plugins ark htop gimp kate vlc libreoffice-fresh print-manager gwenview okular spectacle gparted ntfs-3g yakuake git nm-connection-editor acpid dbus avahi cups nss-mdns plasma-systemmonitor kscreen
+pacman -S plasma-desktop ttf-dejavu breeze breeze-gtk kde-gtk-config xdg-user-dirs sddm sddm-kcm konsole plasma-nm plasma-pa pulseaudio pulseaudio-bluetooth powerdevil firewalld ipset thunderbird firefox plasma-browser-integration kwallet-pam kwalletmanager kinfocenter keepassxc bluez bluez-utils bluedevil networkmanager-vpnc dolphin dolphin-plugins ark htop gimp kate vlc libreoffice-fresh print-manager gwenview okular spectacle gparted ntfs-3g yakuake git nm-connection-editor acpid dbus avahi cups nss-mdns plasma-systemmonitor kscreen
 verbose "Essential packages installed."
 
 # Configure services
@@ -131,7 +130,7 @@ verbose "Time synchronization enabled."
 
 # Install Nvidia drivers and configure
 verbose "Installing Nvidia drivers and configuring."
-pacman -S --noconfirm nvidia
+pacman -S nvidia
 echo -e "[Trigger]
 Operation=Install
 Operation=Upgrade
@@ -160,7 +159,7 @@ verbose "Nvidia drivers installed and configured."
 
 # Install additional packages
 verbose "Installing additional packages."
-pacman -S --noconfirm plasma-workspace xorg-xwayland
+pacman -S plasma-workspace xorg-xwayland
 verbose "Additional packages installed."
 
 # Set environment variables in /etc/security/pam_env.conf
