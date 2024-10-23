@@ -30,7 +30,7 @@ verbose "Locale, keymap, and hostname set."
 verbose "Editing /etc/hosts."
 echo "127.0.0.1       localhost" >> /etc/hosts
 echo "::1             localhost" >> /etc/hosts
-echo "127.0.1.1       PC-Matthias.vlan120.home.arpa PC-Matthias" >> /etc/hosts
+echo "127.0.1.1       PC-Matthias" >> /etc/hosts
 verbose "/etc/hosts configured."
 
 # Generate initramfs
