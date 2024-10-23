@@ -15,7 +15,7 @@ verbose "Timezone set to Europe/Vienna."
 timedatectl set-ntp true
 verbose "NTP enabled."
 
-# 1. Disk selection and partitioning
+# Disk selection and partitioning
 verbose "Listing available NVMe devices..."
 nvme list
 
@@ -35,7 +35,7 @@ verbose "Created root partition (remaining space, type 8309)."
 sync
 verbose "Partitioning of $TARGET_DISK complete."
 
-# 2. LVM on LUKS setup
+# LVM on LUKS setup
 verbose "Setting up LVM on LUKS..."
 cryptsetup luksFormat ${TARGET_DISK}p3 --batch-mode
 cryptsetup open ${TARGET_DISK}p3 cryptlvm
@@ -59,7 +59,7 @@ verbose "Logical volume 'home' created with remaining space."
 lvreduce -L -256M vg/home
 verbose "Reduced 'home' logical volume by 256M."
 
-# 3. Formatting LVM partitions
+# Formatting LVM partitions
 verbose "Formatting LVM partitions..."
 mkfs.ext4 /dev/vg/root
 verbose "Formatted root logical volume as ext4."
@@ -70,7 +70,7 @@ verbose "Formatted home logical volume as ext4."
 mkswap /dev/vg/swap
 verbose "Formatted swap logical volume."
 
-# 4. Mounting LVM partitions and swap
+# Mounting LVM partitions and swap
 verbose "Mounting root logical volume..."
 mount /dev/vg/root /mnt
 verbose "Root logical volume mounted on /mnt."
@@ -81,7 +81,7 @@ verbose "Home logical volume mounted on /mnt/home."
 swapon /dev/vg/swap
 verbose "Swap activated."
 
-# 5. Formatting and mounting EFI partition
+# Formatting and mounting EFI partition
 verbose "Formatting EFI partition..."
 mkfs.fat -F32 ${TARGET_DISK}p2
 verbose "Formatted EFI partition as FAT32."
@@ -89,17 +89,17 @@ verbose "Formatted EFI partition as FAT32."
 mount --mkdir ${TARGET_DISK}p2 /mnt/boot
 verbose "EFI partition mounted on /mnt/boot."
 
-# 6. Base installation (Base, Linux Kernel, Firmware)
+# Base installation (Base, Linux Kernel, Firmware)
 verbose "Starting base installation..."
 pacstrap -K /mnt base base-devel linux linux-firmware lvm2 networkmanager iwd openssh tmux nano vi vim amd-ucode man-db man-pages texinfo reflector bash-completion zsh zsh-completions
 verbose "Base and additional package installation complete."
 
-# 7. Generate fstab
+# Generate fstab
 verbose "Generating fstab..."
 genfstab -U /mnt >> /mnt/etc/fstab
 verbose "fstab generated."
 
-# 8. Modify fstab to replace 'relatime' with 'noatime'
+# Modify fstab to replace 'relatime' with 'noatime'
 verbose "Modifying fstab to replace 'relatime' with 'noatime'..."
 sed -i 's/relatime/noatime/g' /mnt/etc/fstab
 verbose "fstab modified."
