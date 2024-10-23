@@ -28,7 +28,9 @@ verbose "Locale, keymap, and hostname set."
 
 # Edit /etc/hosts
 verbose "Editing /etc/hosts."
-sed -i '/^127\.0\.1\.1[ \t]*/ s/.*/127.0.1.1\tPC-Matthias.vlan120.home.arpa PC-Matthias/' /etc/hosts
+echo "127.0.0.1       localhost" >> /etc/hosts
+echo "::1             localhost" >> /etc/hosts
+echo "127.0.1.1       PC-Matthias.vlan120.home.arpa PC-Matthias" >> /etc/hosts
 verbose "/etc/hosts configured."
 
 # Generate initramfs
@@ -59,13 +61,13 @@ echo -e "title   Arch Linux
 linux   /vmlinuz-linux
 initrd  /amd-ucode.img
 initrd  /initramfs-linux.img
-options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 nvidia_drm.modeset=1 nvidia_drm.fbdev=1 video=DP-3:5120x1440@240 video=DP-1:3840x2160@60,rotate=-90 ipv6.disable=1" > /boot/loader/entries/arch.conf
+options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 nvidia_drm.modeset=1 nvidia_drm.fbdev=1 ipv6.disable=1" > /boot/loader/entries/arch.conf
 
 echo -e "title   Arch Linux (fallback initramfs)
 linux   /vmlinuz-linux
 initrd  /amd-ucode.img
 initrd  /initramfs-linux-fallback.img
-options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 nvidia_drm.modeset=1 nvidia_drm.fbdev=1 video=DP-3:5120x1440@240 video=DP-1:3840x2160@60,rotate=-90 ipv6.disable=1" > /boot/loader/entries/arch-fallback.conf
+options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 nvidia_drm.modeset=1 nvidia_drm.fbdev=1 ipv6.disable=1" > /boot/loader/entries/arch-fallback.conf
 
 bootctl update
 verbose "Bootloader installed and configured."
@@ -147,7 +149,7 @@ Description=Updating NVIDIA module in initcpio
 Depends=mkinitcpio
 When=PostTransaction
 NeedsTargets
-Exec=/bin/sh -c 'while read -r trg; do case $trg in linux*) exit 0; esac; done; /usr/bin/mkinitcpio -P'" > /etc/pacman.d/hooks/nvidia.hook
+Exec=/bin/sh -c 'while read -r trg; do case \$trg in linux*) exit 0; esac; done; /usr/bin/mkinitcpio -P'" > /etc/pacman.d/hooks/nvidia.hook
 sed -i 's/^MODULES=.*/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
 mkinitcpio -P
 echo "options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/var/tmp" > /etc/modprobe.d/nvidia-power-management.conf
