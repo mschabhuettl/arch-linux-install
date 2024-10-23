@@ -142,3 +142,8 @@ mkinitcpio -P
 verbose "Installing additional packages."
 pacman -S --noconfirm plasma-workspace xorg-xwayland
 verbose "Additional packages installed."
+
+# Set environment variables in /etc/security/pam_env.conf
+verbose "Setting environment variables in /etc/security/pam_env.conf."
+echo "XDG_CONFIG_HOME   DEFAULT=@{HOME}/.config" >> /etc/security/pam_env.conf
+verbose "Environment variables set."
