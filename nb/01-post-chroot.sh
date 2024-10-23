@@ -146,3 +146,6 @@ verbose "Additional packages installed."
 verbose "Setting environment variables in /etc/security/pam_env.conf."
 echo "XDG_CONFIG_HOME   DEFAULT=@{HOME}/.config" >> /etc/security/pam_env.conf
 verbose "Environment variables set."
+
+# Final instructions to exit and reboot
+verbose "Setup complete. To exit the chroot environment, type 'exit', and then reboot the system by typing 'reboot'."
