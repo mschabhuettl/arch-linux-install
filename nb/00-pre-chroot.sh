@@ -50,8 +50,8 @@ verbose "Volume group 'vg' created."
 lvcreate -L 32G -n swap vg
 verbose "Logical volume 'swap' created (32G)."
 
-lvcreate -L 256G -n root vg
-verbose "Logical volume 'root' created (256G)."
+lvcreate -L 512G -n root vg
+verbose "Logical volume 'root' created (512G)."
 
 lvcreate -l 100%FREE -n home vg
 verbose "Logical volume 'home' created with remaining space."
