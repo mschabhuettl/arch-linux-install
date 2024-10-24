@@ -43,13 +43,20 @@ verbose "Initramfs generated."
 verbose "Setting root password."
 passwd
 
+# Disk selection
+verbose "Listing available NVMe devices..."
+nvme list
+
+read -p "Enter the target NVMe device (e.g., /dev/nvme0n1): " TARGET_DISK
+verbose "Target disk set to $TARGET_DISK."
+
 # Install and configure bootloader
 verbose "Installing bootloader and configuring entries."
 bootctl install
 
-UUID=$(blkid -s UUID -o value /dev/nvme0n1p3)
+UUID=$(blkid -s UUID -o value ${TARGET_DISK}p3)
 SWAP_UUID=$(blkid -s UUID -o value /dev/mapper/vg-swap)
-verbose "UUID of system partition: $UUID"
+verbose "UUID of LUKS partition: $UUID"
 verbose "UUID of swap partition: $SWAP_UUID"
 
 echo -e "default  arch.conf
