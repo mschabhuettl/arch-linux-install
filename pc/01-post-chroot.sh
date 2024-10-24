@@ -44,6 +44,8 @@ verbose "Setting root password."
 passwd
 
 # Disk selection
+verbose "Installing nvme-cli..."
+pacman -S nvme-cli
 verbose "Listing available NVMe devices..."
 nvme list
 
