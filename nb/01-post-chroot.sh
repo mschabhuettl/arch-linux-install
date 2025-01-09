@@ -163,7 +163,9 @@ echo "XDG_CONFIG_HOME   DEFAULT=@{HOME}/.config" >> /etc/security/pam_env.conf
 verbose "Environment variables set."
 
 # Enable firewall service
+verbose "Enabling Firewalld service."
 systemctl enable firewalld.service
+verbose "Firewalld service enabled."
 
 # Final instructions to exit and reboot
 verbose "Setup complete. To exit the chroot environment, type 'exit', and then reboot the system by typing 'reboot'."
