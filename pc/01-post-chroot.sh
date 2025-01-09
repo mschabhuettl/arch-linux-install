@@ -43,6 +43,12 @@ verbose "Initramfs generated."
 verbose "Setting root password."
 passwd
 
+# Add a CacheServer entry after the Include line in the [core] and [extra] sections
+verbose "Adding CacheServer entries to pacman.conf."
+sed -i '/^\[core\]/,/^Include/ s|^Include.*|&\nCacheServer = http://192.168.112.103:9129/repo/archlinux/$repo/os/$arch|' /etc/pacman.conf
+sed -i '/^\[extra\]/,/^Include/ s|^Include.*|&\nCacheServer = http://192.168.112.103:9129/repo/archlinux/$repo/os/$arch|' /etc/pacman.conf
+verbose "CacheServer entries added."
+
 # Disk selection
 verbose "Installing nvme-cli..."
 pacman -S nvme-cli

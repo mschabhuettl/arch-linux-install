@@ -89,6 +89,12 @@ verbose "Formatted EFI partition as FAT32."
 mount --mkdir ${TARGET_DISK}p2 /mnt/boot
 verbose "EFI partition mounted on /mnt/boot."
 
+# Add a CacheServer entry after the Include line in the [core] and [extra] sections
+verbose "Adding CacheServer entries to pacman.conf."
+sed -i '/^\[core\]/,/^Include/ s|^Include.*|&\nCacheServer = http://192.168.112.103:9129/repo/archlinux/$repo/os/$arch|' /etc/pacman.conf
+sed -i '/^\[extra\]/,/^Include/ s|^Include.*|&\nCacheServer = http://192.168.112.103:9129/repo/archlinux/$repo/os/$arch|' /etc/pacman.conf
+verbose "CacheServer entries added."
+
 # Base installation (Base, Linux Kernel, Firmware)
 verbose "Starting base installation..."
 pacstrap -K /mnt base base-devel linux linux-firmware lvm2 networkmanager iwd openssh tmux nano vi vim amd-ucode man-db man-pages texinfo reflector bash-completion zsh zsh-completions
