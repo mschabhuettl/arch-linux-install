@@ -70,13 +70,13 @@ echo -e "title   Arch Linux
 linux   /vmlinuz-linux
 initrd  /amd-ucode.img
 initrd  /initramfs-linux.img
-options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 nvidia_drm.modeset=1 nvidia_drm.fbdev=1 ipv6.disable=1" > /boot/loader/entries/arch.conf
+options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 nvidia_drm.modeset=1 nvidia_drm.fbdev=1 ipv6.disable=1 quiet" > /boot/loader/entries/arch.conf
 
 echo -e "title   Arch Linux (fallback initramfs)
 linux   /vmlinuz-linux
 initrd  /amd-ucode.img
 initrd  /initramfs-linux-fallback.img
-options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 nvidia_drm.modeset=1 nvidia_drm.fbdev=1 ipv6.disable=1" > /boot/loader/entries/arch-fallback.conf
+options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 nvidia_drm.modeset=1 nvidia_drm.fbdev=1 ipv6.disable=1 quiet" > /boot/loader/entries/arch-fallback.conf
 
 verbose "Bootloader installed and configured."
 
@@ -175,6 +175,9 @@ verbose "Additional packages installed."
 verbose "Setting environment variables in /etc/security/pam_env.conf."
 echo "XDG_CONFIG_HOME   DEFAULT=@{HOME}/.config" >> /etc/security/pam_env.conf
 verbose "Environment variables set."
+
+# Enable firewall service
+systemctl enable firewalld.service
 
 # Final instructions to exit and reboot
 verbose "Setup complete. To exit the chroot environment, type 'exit', and then reboot the system by typing 'reboot'."
