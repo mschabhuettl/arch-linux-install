@@ -113,7 +113,7 @@ verbose "fstab modified."
 
 # Download the post-chroot script directly to /mnt/
 verbose "Downloading the post-chroot script directly to /mnt/..."
-curl -sSLo /mnt/01-post-chroot.sh https://raw.githubusercontent.com/mschabhuettl/arch-linux-install/refs/heads/main/pc/01-post-chroot.sh
+curl -sSLo /mnt/01-post-chroot.sh https://raw.githubusercontent.com/mschabhuettl/arch-linux-install/refs/heads/main/nb/01-post-chroot.sh
 verbose "Post-chroot script downloaded to /mnt/."
 
 # Copy the target_disk.txt to /mnt/
