@@ -98,7 +98,7 @@ verbose "CacheServer entries added."
 
 # Base installation (Base, Linux Kernel, Firmware)
 verbose "Starting base installation..."
-pacstrap -K /mnt base base-devel linux linux-firmware lvm2 networkmanager iwd openssh tmux nano vi vim amd-ucode man-db man-pages texinfo reflector bash-completion zsh zsh-completions
+pacstrap -K /mnt base base-devel linux linux-firmware lvm2 networkmanager iwd openssh tmux nano vi vim amd-ucode man-db man-pages texinfo reflector bash-completion zsh zsh-completions nvme-cli
 verbose "Base and additional package installation complete."
 
 # Generate fstab
