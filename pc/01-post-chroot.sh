@@ -176,6 +176,9 @@ verbose "Additional packages installed."
 # Set environment variables in /etc/security/pam_env.conf
 verbose "Setting environment variables in /etc/security/pam_env.conf."
 echo "XDG_CONFIG_HOME   DEFAULT=@{HOME}/.config" >> /etc/security/pam_env.conf
+echo "XDG_CACHE_HOME   DEFAULT=@{HOME}/.cache" >> /etc/security/pam_env.conf
+echo "XDG_DATA_HOME   DEFAULT=@{HOME}/.local/share" >> /etc/security/pam_env.conf
+echo "XDG_STATE_HOME   DEFAULT=@{HOME}/.local/state" >> /etc/security/pam_env.conf
 verbose "Environment variables set."
 
 # Enable firewall service
