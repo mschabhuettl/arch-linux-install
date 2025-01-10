@@ -21,6 +21,7 @@ nvme list
 
 read -p "Enter the target NVMe device (e.g., /dev/nvme0n1): " TARGET_DISK
 verbose "Target disk set to $TARGET_DISK. Starting partitioning..."
+echo "$TARGET_DISK" > target_disk.txt
 
 sgdisk -o $TARGET_DISK
 sgdisk -n 1:0:+1M -t 1:ef02 $TARGET_DISK
@@ -110,7 +111,22 @@ verbose "Modifying fstab to replace 'relatime' with 'noatime'..."
 sed -i 's/relatime/noatime/g' /mnt/etc/fstab
 verbose "fstab modified."
 
+# Download the post-chroot script directly to /mnt/
+verbose "Downloading the post-chroot script directly to /mnt/..."
+curl -sSLo /mnt/01-post-chroot.sh https://raw.githubusercontent.com/mschabhuettl/arch-linux-install/refs/heads/main/pc/01-post-chroot.sh
+verbose "Post-chroot script downloaded to /mnt/."
+
+# Copy the target_disk.txt to /mnt/
+verbose "Copying target_disk.txt to /mnt/..."
+cp target_disk.txt /mnt/
+verbose "target_disk.txt copied to /mnt/."
+
+# Make the script executable
+verbose "Making the post-chroot script executable..."
+chmod +x /mnt/01-post-chroot.sh
+verbose "Post-chroot script is now executable."
+
 # Note: Up to this point, we have not switched to the chroot environment.
-verbose "The base installation is complete. To continue, run 'arch-chroot /mnt' manually to enter the chroot environment and proceed with further setup."
+verbose "The base installation is complete. To continue, run 'arch-chroot /mnt' manually and execute './01-post-chroot.sh' inside the chroot environment to proceed with further setup."
 
 verbose "Arch Linux pre-chroot setup is complete."

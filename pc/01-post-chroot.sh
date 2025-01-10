@@ -50,13 +50,9 @@ sed -i '/^\[extra\]/,/^Include/ s|^Include.*|&\nCacheServer = http://192.168.112
 verbose "CacheServer entries added."
 
 # Disk selection
-verbose "Installing nvme-cli..."
-pacman -S nvme-cli
-verbose "Listing available NVMe devices..."
-nvme list
-
-read -p "Enter the target NVMe device (e.g., /dev/nvme0n1): " TARGET_DISK
-verbose "Target disk set to $TARGET_DISK."
+verbose "Reading target disk from target_disk.txt..."
+TARGET_DISK=$(cat target_disk.txt)
+verbose "Target disk set to $TARGET_DISK. Proceeding with the setup."
 
 # Install and configure bootloader
 verbose "Installing bootloader and configuring entries."
