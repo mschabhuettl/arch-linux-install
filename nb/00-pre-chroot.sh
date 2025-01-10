@@ -106,6 +106,11 @@ verbose "Generating fstab..."
 genfstab -U /mnt >> /mnt/etc/fstab
 verbose "fstab generated."
 
+# Modify fstab to replace 'relatime' with 'noatime'
+verbose "Modifying fstab to replace 'relatime' with 'noatime'..."
+sed -i 's/relatime/noatime/g' /mnt/etc/fstab
+verbose "fstab modified."
+
 # Download the post-chroot script directly to /mnt/
 verbose "Downloading the post-chroot script directly to /mnt/..."
 curl -sSLo /mnt/01-post-chroot.sh https://raw.githubusercontent.com/mschabhuettl/arch-linux-install/refs/heads/main/pc/01-post-chroot.sh
