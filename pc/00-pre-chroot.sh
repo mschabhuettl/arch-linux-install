@@ -8,7 +8,7 @@ verbose() {
   echo -e "\033[1;32m[INFO]\033[0m $1"
 }
 
-# Pre-setup: Set timezone and enable NTP
+# Pre-setup: Set timezone and NTP
 verbose "Setting up timezone and NTP."
 timedatectl set-timezone Europe/Vienna
 verbose "Timezone set to Europe/Vienna."
@@ -22,8 +22,8 @@ execute_command() {
     eval "$cmd"
     local status=$?
     if [ $status -ne 0 ]; then
-        verbose "Warning: Command failed -> $cmd"
-        return 1
+        verbose "[ERROR] Command failed -> $cmd"
+        exit 1
     fi
 }
 
@@ -37,7 +37,11 @@ check_nvme_sanitize() {
         
         if [[ "$sprog" == "65535" && "$sstat" == "0x101" ]]; then
             verbose "Sanitize process for $device completed."
+            verbose "Final Sanitize Status: SPROG=$sprog, SSTAT=$sstat"
             break
+        elif [[ -z "$sprog" || -z "$sstat" ]]; then
+            verbose "[ERROR] Sanitize log not providing expected values. Aborting."
+            exit 1
         fi
         verbose "Waiting for sanitize process to complete on $device... (SPROG=${sprog:-unknown}, SSTAT=${sstat:-unknown})"
         sleep 5
@@ -47,10 +51,11 @@ check_nvme_sanitize() {
 # Function to validate drive names and normalize NVMe names
 normalize_drive() {
     local device="$1"
-    if [[ "$device" =~ ^/dev/nvme[0-9]+$ ]]; then
-        echo "${device}n1"
-    else
+    if [[ "$device" =~ ^/dev/nvme[0-9]+$ || "$device" =~ ^/dev/ng[0-9]+n[0-9]+$ ]]; then
         echo "$device"
+    else
+        verbose "[ERROR] Unsupported device format: $device"
+        exit 1
     fi
 }
 
@@ -66,11 +71,12 @@ validate_drive() {
 select_drives() {
     verbose "Listing available NVMe devices..."
     nvme list
-    
-    read -p "Enter the target drive(s) (space-separated, e.g., /dev/ng0n1 /dev/nvme0): " -a selected_drives
+    verbose "Note: The device parameter must be a generic NVMe character device (e.g., /dev/nvme0 or /dev/ng0, NOT /dev/nvme0n1 or any other partitioned namespace), as the operation applies necessarily to whole devices."
+    local example_device=$(nvme list | awk 'NR==3 {print $1}')
+    read -p "Enter the target drive(s) (space-separated, e.g., $example_device): " -a selected_drives
 }
 
-# Secure erase for NVMe drives with ngXn1 and nvmeX format
+# Secure erase for NVMe drives with ngXnY and nvmeX format
 secure_erase_nvme() {
     local device=$(normalize_drive "$1")
     
@@ -89,11 +95,7 @@ select_drives
 for drive in "${selected_drives[@]}"; do
     drive=$(normalize_drive "$drive")
     validate_drive "$drive"
-    if [[ "$drive" == *ng* || "$drive" == *nvme* ]]; then
-        secure_erase_nvme "$drive"
-    else
-        verbose "Skipping unsupported device: $drive"
-    fi
+    secure_erase_nvme "$drive"
 done
 
 verbose "Secure erase completed successfully."
