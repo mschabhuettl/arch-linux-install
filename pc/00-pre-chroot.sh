@@ -8,7 +8,7 @@ verbose() {
   echo -e "\033[1;32m[INFO]\033[0m $1"
 }
 
-# Pre-setup: Set timezone and NTP
+# Pre-setup: Set timezone and enable NTP
 verbose "Setting up timezone and NTP."
 timedatectl set-timezone Europe/Vienna
 verbose "Timezone set to Europe/Vienna."
