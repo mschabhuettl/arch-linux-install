@@ -8,7 +8,12 @@ verbose() {
   echo -e "\033[1;32m[INFO]\033[0m $1"
 }
 
-# Pre-setup: Set timezone and enable NTP
+# Function to print error messages
+error_message() {
+  echo -e "\033[1;31m[ERROR]\033[0m $1"
+}
+
+# Pre-setup: Set timezone and NTP
 verbose "Setting up timezone and NTP."
 timedatectl set-timezone Europe/Vienna
 verbose "Timezone set to Europe/Vienna."
@@ -22,7 +27,7 @@ execute_command() {
     eval "$cmd"
     local status=$?
     if [ $status -ne 0 ]; then
-        verbose "[ERROR] Command failed -> $cmd"
+        error_message "Command failed -> $cmd"
         exit 1
     fi
 }
@@ -40,7 +45,7 @@ check_nvme_sanitize() {
             verbose "Final Sanitize Status: SPROG=$sprog, SSTAT=$sstat"
             break
         elif [[ -z "$sprog" || -z "$sstat" ]]; then
-            verbose "[ERROR] Sanitize log not providing expected values. Aborting."
+            error_message "Sanitize log not providing expected values. Aborting."
             exit 1
         fi
         verbose "Waiting for sanitize process to complete on $device... (SPROG=${sprog:-unknown}, SSTAT=${sstat:-unknown})"
@@ -54,7 +59,7 @@ normalize_drive() {
     if [[ "$device" =~ ^/dev/nvme[0-9]+$ || "$device" =~ ^/dev/ng[0-9]+n[0-9]+$ ]]; then
         echo "$device"
     else
-        verbose "[ERROR] Unsupported device format: $device"
+        error_message "Unsupported device format: $device"
         exit 1
     fi
 }
@@ -62,7 +67,7 @@ normalize_drive() {
 validate_drive() {
     local device="$1"
     if [[ ! -e "$device" ]]; then
-        verbose "[ERROR] Invalid device: $device does not exist."
+        error_message "Invalid device: $device does not exist."
         exit 1
     fi
 }
