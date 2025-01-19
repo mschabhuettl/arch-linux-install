@@ -77,10 +77,10 @@ select_drives() {
     verbose "Listing available NVMe devices..."
     nvme list
     verbose "Note: The device parameter must be a generic NVMe character device (e.g., /dev/nvme0 or /dev/ng0n1, NOT /dev/nvme0n1 or any other partitioned namespace), as the operation applies necessarily to whole devices."
-    
-    # Filter valid NVMe character devices (e.g., /dev/nvme0, /dev/ng0n1 but NOT /dev/nvme0n1)
-    local example_device=$(nvme list | awk 'NR>1 && ($1 ~ /^\/dev\/nvme[0-9]+$/ || $1 ~ /^\/dev\/ng[0-9]+n1$/) {print $1; exit}')
-    
+
+    # Extract the correct "Generic" NVMe device (2nd column in `nvme list`)
+    local example_device=$(nvme list | awk 'NR>1 && $2 ~ /^\/dev\// {print $2; exit}')
+
     read -p "Enter the target drive(s) (space-separated, e.g., $example_device): " -a selected_drives
 }
 
