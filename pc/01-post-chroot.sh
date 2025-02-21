@@ -103,7 +103,7 @@ verbose "Mirrorlist updated."
 
 # Install essential packages
 verbose "Installing essential packages."
-pacman -S plasma-desktop ttf-dejavu breeze breeze-gtk kde-gtk-config xdg-user-dirs sddm sddm-kcm konsole plasma-nm plasma-pa pulseaudio pulseaudio-bluetooth powerdevil firewalld ipset thunderbird firefox plasma-browser-integration kwallet-pam kwalletmanager kinfocenter keepassxc bluez bluez-utils bluedevil networkmanager-vpnc dolphin dolphin-plugins ark htop gimp kate vlc libreoffice-fresh print-manager gwenview okular spectacle gparted ntfs-3g yakuake git nm-connection-editor acpid dbus avahi cups nss-mdns plasma-systemmonitor kscreen qt5-wayland android-tools
+pacman -S plasma-desktop ttf-dejavu breeze breeze-gtk kde-gtk-config xdg-user-dirs sddm sddm-kcm konsole plasma-nm plasma-pa pulseaudio pulseaudio-bluetooth powerdevil firewalld ipset thunderbird firefox plasma-browser-integration kwallet-pam kwalletmanager kinfocenter keepassxc bluez bluez-utils bluedevil networkmanager-vpnc dolphin dolphin-plugins ark htop gimp kate vlc libreoffice-fresh print-manager gwenview okular spectacle gparted ntfs-3g yakuake git nm-connection-editor acpid dbus avahi cups nss-mdns plasma-systemmonitor kscreen qt5-wayland android-tools scrcpy system-config-printer kdialog linux-headers dkms dosfstools tree power-profiles-daemon xdg-desktop-portal xdg-desktop-portal-kde efibootmgr
 verbose "Essential packages installed."
 
 # Configure services
@@ -120,6 +120,7 @@ systemctl disable systemd-resolved.service
 systemctl enable avahi-daemon.service
 systemctl enable acpid.service
 systemctl enable cups.service
+systemctl enable bluetooth.service
 verbose "Services configured."
 
 # Create user and configure sudo
