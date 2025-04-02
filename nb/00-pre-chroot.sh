@@ -36,7 +36,7 @@ execute_command() {
 check_nvme_sanitize() {
     local device="$1"
     while true; do
-        output=$(nvme sanitize-log "$device" 2>/dev/null)
+        output=$(nvme sanitize-log $device 2>/dev/null)
         local sprog=$(echo "$output" | awk '/Sanitize Progress/ {print $NF}')
         local sstat=$(echo "$output" | awk '/Sanitize Status/ {print $NF}')
         
