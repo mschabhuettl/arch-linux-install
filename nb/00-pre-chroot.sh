@@ -56,10 +56,10 @@ check_nvme_sanitize() {
 # Function to validate drive names and normalize NVMe names
 normalize_drive() {
     local device="$1"
-    if [[ "$device" =~ ^/dev/nvme[0-9]+$ || "$device" =~ ^/dev/ng[0-9]+n[0-9]+$ ]]; then
+    if [[ "$device" =~ ^/dev/nvme[0-9]+$ ]]; then
         echo "$device"
     else
-        error_message "Unsupported device format: $device"
+        error_message "Unsupported device format: $device. Only /dev/nvmeX is allowed."
         exit 1
     fi
 }
@@ -76,15 +76,15 @@ validate_drive() {
 select_drives() {
     verbose "Listing available NVMe devices..."
     nvme list
-    verbose "Note: The device parameter must be a generic NVMe character device (e.g., /dev/nvme0 or /dev/ng0n1, NOT /dev/nvme0n1 or any other partitioned namespace), as the operation applies necessarily to whole devices."
+    verbose "Note: Only controller devices like /dev/nvmeX are supported. Do NOT use namespace devices like /dev/nvmeXn1 or /dev/ngXnY."
 
-    # Extract only valid "Generic" NVMe devices (2nd column in `nvme list`)
-    local example_device=$(nvme list | awk 'NR>1 && ($2 ~ /^\/dev\/nvme[0-9]+$/ || $2 ~ /^\/dev\/ng[0-9]+n[0-9]+$/) {print $2; exit}')
+    # Extract only valid /dev/nvmeX devices (2nd column in `nvme list`)
+    local example_device=$(nvme list | awk 'NR>1 && $2 ~ /^\/dev\/nvme[0-9]+$/ {print $2; exit}')
 
     read -p "Enter the target drive(s) (space-separated, e.g., $example_device): " -a selected_drives
 }
 
-# Secure erase for NVMe drives with ngXnY and nvmeX format
+# Secure erase for NVMe drives
 secure_erase_nvme() {
     local device=$(normalize_drive "$1")
     
