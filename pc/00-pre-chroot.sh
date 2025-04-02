@@ -36,7 +36,7 @@ execute_command() {
 check_nvme_sanitize() {
     local device="$1"
     while true; do
-        output=$(nvme sanitize-log $device 2>/dev/null)
+        output=$(nvme sanitize-log "$device" 2>/dev/null)
         local sprog=$(echo "$output" | awk '/Sanitize Progress/ {print $NF}')
         local sstat=$(echo "$output" | awk '/Sanitize Status/ {print $NF}')
         
@@ -74,12 +74,12 @@ validate_drive() {
 
 # Function to list and select drives for secure erase
 select_drives() {
-    verbose "Listing available NVMe devices..."
+    verbose "Listing available NVMe controller devices..."
     nvme list
-    verbose "Note: Only controller devices like /dev/nvmeX are supported. Do NOT use namespace devices like /dev/nvmeXn1 or /dev/ngXnY."
+    verbose "Note: Only controller devices like /dev/nvmeX are supported. Do NOT use namespaces like /dev/nvmeXn1."
 
-    # Extract only valid /dev/nvmeX devices (2nd column in `nvme list`)
-    local example_device=$(nvme list | awk 'NR>1 && $2 ~ /^\/dev\/nvme[0-9]+$/ {print $2; exit}')
+    # Extract valid /dev/nvmeX controller device (1st column in `nvme list`)
+    local example_device=$(nvme list | awk 'NR>1 && $1 ~ /^\/dev\/nvme[0-9]+$/ {print $1; exit}')
 
     read -p "Enter the target drive(s) (space-separated, e.g., $example_device): " -a selected_drives
 }
@@ -90,9 +90,9 @@ secure_erase_nvme() {
     
     execute_command "nvme format $device -s 2 -n 1 --force"
     execute_command "nvme sanitize $device -a start-crypto-erase"
-    check_nvme_sanitize $device
+    check_nvme_sanitize "$device"
     execute_command "nvme sanitize $device -a start-block-erase"
-    check_nvme_sanitize $device
+    check_nvme_sanitize "$device"
     execute_command "nvme format $device -s 2 -n 1 --force"
 }
 
