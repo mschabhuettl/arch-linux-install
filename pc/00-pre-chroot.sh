@@ -32,18 +32,6 @@ execute_command() {
     fi
 }
 
-# Function to execute a command and check for success
-execute_command() {
-    local cmd="$1"
-    verbose "Executing: $cmd"
-    eval "$cmd"
-    local status=$?
-    if [ $status -ne 0 ]; then
-        error_message "Command failed -> $cmd"
-        exit 1
-    fi
-}
-
 # Function to check NVMe sanitize status
 check_nvme_sanitize() {
     local device="$1"
