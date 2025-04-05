@@ -32,6 +32,18 @@ execute_command() {
     fi
 }
 
+# Function to execute a command and check for success
+execute_command() {
+    local cmd="$1"
+    verbose "Executing: $cmd"
+    eval "$cmd"
+    local status=$?
+    if [ $status -ne 0 ]; then
+        error_message "Command failed -> $cmd"
+        exit 1
+    fi
+}
+
 # Function to check NVMe sanitize status
 check_nvme_sanitize() {
     local device="$1"
@@ -76,10 +88,10 @@ validate_drive() {
 select_drives() {
     verbose "Listing available NVMe controller devices..."
     nvme list
-    verbose "Note: Only controller devices like /dev/nvmeX are supported. Do NOT use namespaces like /dev/nvmeXn1."
+    verbose "Note: Only controller devices like /dev/nvmeX are supported. Do NOT use namespace devices like /dev/nvmeXn1 or /dev/ngXnY."
 
     # Extract valid /dev/nvmeX controller device (1st column in `nvme list`)
-    local example_device=$(nvme list | awk 'NR>1 && $1 ~ /^\/dev\/nvme[0-9]+$/ {print $1; exit}')
+    local example_device=$(nvme list | awk 'NR > 2 {print $1}' | sed -E 's|(\/dev\/nvme[0-9]+)n[0-9]+|\1|' | sort -u | head -n1)
 
     read -p "Enter the target drive(s) (space-separated, e.g., $example_device): " -a selected_drives
 }
