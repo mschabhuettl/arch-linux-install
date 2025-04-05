@@ -140,8 +140,8 @@ verbose "Enabling time synchronization."
 systemctl enable systemd-timesyncd.service
 verbose "Time synchronization enabled."
 
-# Install Nvidia drivers and configure
-verbose "Installing Nvidia drivers and configuring."
+# Install NVIDIA drivers and configure
+verbose "Installing NVIDIA drivers and configuring."
 pacman -S nvidia
 echo -e "[Trigger]
 Operation=Install
@@ -167,7 +167,7 @@ echo "options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFileP
 mkinitcpio -P
 systemctl enable nvidia-suspend.service
 systemctl enable nvidia-hibernate.service
-verbose "Nvidia drivers installed and configured."
+verbose "NVIDIA drivers installed and configured."
 
 # Install additional packages
 verbose "Installing additional packages."
