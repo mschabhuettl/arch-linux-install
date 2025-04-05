@@ -150,8 +150,8 @@ Operation=Remove
 Type=Package
 # You can remove package(s) that don't apply to your config, e.g. if you only use nvidia-open you can remove nvidia-lts as a Target
 Target=nvidia
-Target=nvidia-open
-Target=nvidia-lts
+#Target=nvidia-open
+#Target=nvidia-lts
 # If running a different kernel, modify below to match
 Target=linux
 
