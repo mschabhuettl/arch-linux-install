@@ -142,25 +142,7 @@ verbose "Time synchronization enabled."
 
 # Install NVIDIA drivers and configure
 verbose "Installing NVIDIA drivers and configuring."
-pacman -S nvidia
-echo -e "[Trigger]
-Operation=Install
-Operation=Upgrade
-Operation=Remove
-Type=Package
-# You can remove package(s) that don't apply to your config, e.g. if you only use nvidia-open you can remove nvidia-lts as a Target
-Target=nvidia
-#Target=nvidia-open
-#Target=nvidia-lts
-# If running a different kernel, modify below to match
-Target=linux
-
-[Action]
-Description=Updating NVIDIA module in initcpio
-Depends=mkinitcpio
-When=PostTransaction
-NeedsTargets
-Exec=/bin/sh -c 'while read -r trg; do case \$trg in linux*) exit 0; esac; done; /usr/bin/mkinitcpio -P'" > /etc/pacman.d/hooks/nvidia.hook
+pacman -S nvidia-dkms
 sed -i 's/^MODULES=.*/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
 mkinitcpio -P
 echo "options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/var/tmp" > /etc/modprobe.d/nvidia-power-management.conf
