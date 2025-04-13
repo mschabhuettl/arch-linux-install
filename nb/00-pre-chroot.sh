@@ -76,7 +76,7 @@ validate_drive() {
 select_drives() {
     verbose "Listing available NVMe controller devices..."
     nvme list
-    verbose "Note: Only controller devices like /dev/nvmeX are supported. Do NOT use namespace devices like /dev/nvmeXn1 or /dev/ngXnY."
+    verbose "Note: Only controller devices like /dev/nvmeX are supported. Do NOT use namespace devices like /dev/nvmeXnY or /dev/ngXnY."
 
     # Extract valid /dev/nvmeX controller device (1st column in `nvme list`)
     local example_device=$(nvme list | awk 'NR > 2 {print $1}' | sed -E 's|(\/dev\/nvme[0-9]+)n[0-9]+|\1|' | sort -u | head -n1)
