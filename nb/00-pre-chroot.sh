@@ -189,6 +189,16 @@ sed -i '/^\[core\]/,/^Include/ s|^Include.*|&\nCacheServer = http://192.168.112.
 sed -i '/^\[extra\]/,/^Include/ s|^Include.*|&\nCacheServer = http://192.168.112.103:9129/repo/archlinux/$repo/os/$arch|' /etc/pacman.conf
 verbose "CacheServer entries added."
 
+# Update mirrorlist
+verbose "Updating mirrorlist with reflector."
+reflector --save /etc/pacman.d/mirrorlist --protocol https --country France,Germany --latest 5 --sort age
+verbose "Mirrorlist updated."
+
+# Refresh package database
+verbose "Refreshing package database..."
+pacman -Syy
+verbose "Package database refreshed."
+
 # Base installation (Base, Linux Kernel, Firmware)
 verbose "Starting base installation..."
 pacstrap -K /mnt base base-devel linux linux-firmware lvm2 networkmanager iwd openssh tmux nano vi vim amd-ucode man-db man-pages texinfo reflector bash-completion zsh zsh-completions nvme-cli
