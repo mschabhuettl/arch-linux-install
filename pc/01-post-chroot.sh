@@ -101,6 +101,11 @@ verbose "Updating mirrorlist with reflector."
 reflector --save /etc/pacman.d/mirrorlist --protocol https --country France,Germany --latest 5 --sort age
 verbose "Mirrorlist updated."
 
+# Refresh package database
+verbose "Refreshing package database..."
+pacman -Syy
+verbose "Package database refreshed."
+
 # Install essential packages
 verbose "Installing essential packages."
 pacman -S plasma-desktop ttf-dejavu breeze breeze-gtk kde-gtk-config xdg-user-dirs sddm sddm-kcm konsole plasma-nm plasma-pa pulseaudio pulseaudio-bluetooth powerdevil firewalld ipset thunderbird firefox plasma-browser-integration kwallet-pam kwalletmanager kinfocenter keepassxc bluez bluez-utils bluedevil networkmanager-vpnc dolphin dolphin-plugins ark htop gimp kate vlc libreoffice-fresh print-manager gwenview okular spectacle gparted ntfs-3g yakuake git nm-connection-editor acpid dbus avahi cups nss-mdns plasma-systemmonitor kscreen qt5-wayland android-tools scrcpy system-config-printer kdialog linux-headers dkms dosfstools tree power-profiles-daemon xdg-desktop-portal xdg-desktop-portal-kde efibootmgr
