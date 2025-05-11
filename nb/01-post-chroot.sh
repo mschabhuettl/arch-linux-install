@@ -108,7 +108,7 @@ verbose "Package database refreshed."
 
 # Install essential packages
 verbose "Installing essential packages."
-pacman -S plasma-meta ttf-dejavu breeze sddm konsole pulseaudio pulseaudio-bluetooth firewalld ipset thunderbird firefox kwalletmanager keepassxc bluez bluez-utils networkmanager-vpnc dolphin dolphin-plugins ark htop gimp kate vlc libreoffice-fresh gwenview okular gparted ntfs-3g yakuake git nm-connection-editor acpid dbus avahi cups nss-mdns chrony qt5-wayland android-tools scrcpy system-config-printer kdialog dosfstools tree tlp xdg-desktop-portal efibootmgr
+pacman -S plasma-meta ttf-dejavu breeze xdg-user-dirs sddm konsole pulseaudio pulseaudio-bluetooth firewalld ipset thunderbird firefox kwalletmanager keepassxc bluez bluez-utils networkmanager-vpnc dolphin dolphin-plugins ark htop gimp kate vlc libreoffice-fresh gwenview okular gparted ntfs-3g yakuake git nm-connection-editor acpid dbus avahi cups nss-mdns chrony qt5-wayland android-tools scrcpy system-config-printer kdialog dosfstools tree tlp xdg-desktop-portal efibootmgr
 verbose "Essential packages installed."
 
 # Configure services
