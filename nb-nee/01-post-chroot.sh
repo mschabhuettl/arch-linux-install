@@ -23,14 +23,14 @@ verbose "Locales generated."
 
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 echo "KEYMAP=de-latin1-nodeadkeys" > /etc/vconsole.conf
-echo "NB-Nicola" > /etc/hostname
+echo "NB-Matthias" > /etc/hostname
 verbose "Locale, keymap, and hostname set."
 
 # Edit /etc/hosts
 verbose "Editing /etc/hosts."
 echo "127.0.0.1       localhost" >> /etc/hosts
 echo "::1             localhost" >> /etc/hosts
-echo "127.0.1.1       NB-Nicola" >> /etc/hosts
+echo "127.0.1.1       NB-Matthias" >> /etc/hosts
 verbose "/etc/hosts configured."
 
 # Generate initramfs
@@ -43,14 +43,16 @@ verbose "Initramfs generated."
 verbose "Setting root password."
 passwd
 
-# Disk selection
-verbose "Installing nvme-cli..."
-pacman -S nvme-cli
-verbose "Listing available NVMe devices..."
-nvme list
+# Add a CacheServer entry after the Include line in the [core] and [extra] sections
+verbose "Adding CacheServer entries to pacman.conf."
+sed -i '/^\[core\]/,/^Include/ s|^Include.*|&\nCacheServer = http://192.168.112.103:9129/repo/archlinux/$repo/os/$arch|' /etc/pacman.conf
+sed -i '/^\[extra\]/,/^Include/ s|^Include.*|&\nCacheServer = http://192.168.112.103:9129/repo/archlinux/$repo/os/$arch|' /etc/pacman.conf
+verbose "CacheServer entries added."
 
-read -p "Enter the target NVMe device (e.g., /dev/nvme0n1): " TARGET_DISK
-verbose "Target disk set to $TARGET_DISK."
+# Disk selection
+verbose "Reading target disk from target_disk.txt..."
+TARGET_DISK=$(cat target_disk.txt)
+verbose "Target disk set to $TARGET_DISK. Proceeding with the setup."
 
 # Install and configure bootloader
 verbose "Installing bootloader and configuring entries."
@@ -68,15 +70,15 @@ editor   no" > /boot/loader/loader.conf
 
 echo -e "title   Arch Linux
 linux   /vmlinuz-linux
-initrd  /intel-ucode.img
+initrd  /amd-ucode.img
 initrd  /initramfs-linux.img
-options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 ipv6.disable=1" > /boot/loader/entries/arch.conf
+options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 ipv6.disable=1 quiet" > /boot/loader/entries/arch.conf
 
 echo -e "title   Arch Linux (fallback initramfs)
 linux   /vmlinuz-linux
-initrd  /intel-ucode.img
+initrd  /amd-ucode.img
 initrd  /initramfs-linux-fallback.img
-options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 ipv6.disable=1" > /boot/loader/entries/arch-fallback.conf
+options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 ipv6.disable=1 quiet" > /boot/loader/entries/arch-fallback.conf
 
 verbose "Bootloader installed and configured."
 
@@ -99,9 +101,14 @@ verbose "Updating mirrorlist with reflector."
 reflector --save /etc/pacman.d/mirrorlist --protocol https --country France,Germany --latest 5 --sort age
 verbose "Mirrorlist updated."
 
+# Refresh package database
+verbose "Refreshing package database..."
+pacman -Syy
+verbose "Package database refreshed."
+
 # Install essential packages
 verbose "Installing essential packages."
-pacman -S plasma-desktop ttf-dejavu breeze breeze-gtk kde-gtk-config xdg-user-dirs sddm sddm-kcm konsole plasma-nm plasma-pa pulseaudio pulseaudio-bluetooth powerdevil firewalld ipset thunderbird firefox plasma-browser-integration kwallet-pam kwalletmanager kinfocenter keepassxc bluez bluez-utils bluedevil networkmanager-vpnc dolphin dolphin-plugins ark htop gimp kate vlc libreoffice-fresh print-manager gwenview okular spectacle gparted ntfs-3g yakuake git nm-connection-editor acpid dbus avahi cups nss-mdns chrony plasma-systemmonitor kscreen sof-firmware elisa yt-dlp
+pacman -S plasma-meta ttf-dejavu breeze xdg-user-dirs sddm konsole pulseaudio pulseaudio-bluetooth firewalld ipset thunderbird firefox kwalletmanager keepassxc bluez bluez-utils networkmanager-vpnc dolphin dolphin-plugins ark htop gimp kate vlc libreoffice-fresh gwenview okular gparted ntfs-3g yakuake git nm-connection-editor acpid dbus avahi cups nss-mdns chrony qt5-wayland android-tools scrcpy system-config-printer kdialog dosfstools tree tlp xdg-desktop-portal efibootmgr
 verbose "Essential packages installed."
 
 # Configure services
@@ -118,19 +125,20 @@ systemctl disable systemd-resolved.service
 systemctl enable avahi-daemon.service
 systemctl enable acpid.service
 systemctl enable cups.service
+systemctl enable bluetooth.service
 verbose "Services configured."
 
 # Create user and configure sudo
 verbose "Creating user and configuring sudo."
-useradd -m -g users -s /bin/zsh -u 1001 nee
-passwd nee
+useradd -m -g users -s /bin/zsh mss
+passwd mss
 sed -i 's/^#\s*%wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
-gpasswd -a nee wheel
-gpasswd -a nee audio
-gpasswd -a nee video
-gpasswd -a nee games
-gpasswd -a nee power
-verbose "User 'nee' created and configured."
+gpasswd -a mss wheel
+gpasswd -a mss audio
+gpasswd -a mss video
+gpasswd -a mss games
+gpasswd -a mss power
+verbose "User 'mss' created and configured."
 
 # Enable time synchronization
 verbose "Enabling time synchronization."
@@ -143,7 +151,7 @@ verbose "Installing Mesa drivers."
 pacman -S mesa
 verbose "Mesa drivers installed."
 
-sed -i 's/^MODULES=.*/MODULES=(i915)/' /etc/mkinitcpio.conf
+sed -i 's/^MODULES=.*/MODULES=(amdgpu)/' /etc/mkinitcpio.conf
 mkinitcpio -P
 
 # Install additional packages
@@ -154,7 +162,15 @@ verbose "Additional packages installed."
 # Set environment variables in /etc/security/pam_env.conf
 verbose "Setting environment variables in /etc/security/pam_env.conf."
 echo "XDG_CONFIG_HOME   DEFAULT=@{HOME}/.config" >> /etc/security/pam_env.conf
+echo "XDG_CACHE_HOME   DEFAULT=@{HOME}/.cache" >> /etc/security/pam_env.conf
+echo "XDG_DATA_HOME   DEFAULT=@{HOME}/.local/share" >> /etc/security/pam_env.conf
+echo "XDG_STATE_HOME   DEFAULT=@{HOME}/.local/state" >> /etc/security/pam_env.conf
 verbose "Environment variables set."
+
+# Enable firewall service
+verbose "Enabling Firewalld service."
+systemctl enable firewalld.service
+verbose "Firewalld service enabled."
 
 # Final instructions to exit and reboot
 verbose "Setup complete. To exit the chroot environment, type 'exit', and then reboot the system by typing 'reboot'."
