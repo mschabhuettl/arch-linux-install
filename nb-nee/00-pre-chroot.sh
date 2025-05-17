@@ -141,8 +141,8 @@ verbose "Physical volume created."
 vgcreate vg /dev/mapper/cryptlvm
 verbose "Volume group 'vg' created."
 
-lvcreate -L 64G -n swap vg
-verbose "Logical volume 'swap' created (64G)."
+lvcreate -L 32G -n swap vg
+verbose "Logical volume 'swap' created (32G)."
 
 lvcreate -L 512G -n root vg
 verbose "Logical volume 'root' created (512G)."
@@ -201,7 +201,7 @@ verbose "Package database refreshed."
 
 # Base installation (Base, Linux Kernel, Firmware)
 verbose "Starting base installation..."
-pacstrap -K /mnt base base-devel linux linux-firmware lvm2 networkmanager iwd openssh tmux nano vi vim amd-ucode man-db man-pages texinfo reflector bash-completion zsh zsh-completions nvme-cli
+pacstrap -K /mnt base base-devel linux linux-firmware lvm2 networkmanager iwd openssh tmux nano vi vim intel-ucode man-db man-pages texinfo reflector bash-completion zsh zsh-completions nvme-cli
 verbose "Base and additional package installation complete."
 
 # Generate fstab
