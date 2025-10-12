@@ -145,10 +145,10 @@ verbose "Enabling time synchronization."
 systemctl enable systemd-timesyncd.service
 verbose "Time synchronization enabled."
 
-# Install NVIDIA drivers and configure
-verbose "Installing NVIDIA drivers and configuring."
+# Install NVIDIA drivers and configure (including Atlantic NIC driver for Initramfs)
+verbose "Installing NVIDIA drivers and adding Atlantic network driver to initramfs."
 pacman -S nvidia-dkms
-sed -i 's/^MODULES=.*/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
+sed -i 's/^MODULES=.*/MODULES=(atlantic nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
 mkinitcpio -P
 echo "options nvidia NVreg_PreserveVideoMemoryAllocations=1 NVreg_TemporaryFilePath=/var/tmp" > /etc/modprobe.d/nvidia-power-management.conf
 mkinitcpio -P
