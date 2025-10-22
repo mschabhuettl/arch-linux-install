@@ -174,5 +174,37 @@ verbose "Enabling Firewalld service."
 systemctl enable firewalld.service
 verbose "Firewalld service enabled."
 
+# Create .config directory for user mss
+verbose "Creating /home/mss/.config directory."
+install -d -m 755 -o mss -g users /home/mss/.config
+verbose "/home/mss/.config directory created."
+
+# Create kxkbrc keyboard layout configuration for user mss
+verbose "Creating kxkbrc keyboard layout configuration."
+install -m 600 -o mss -g users /dev/stdin /home/mss/.config/kxkbrc <<'EOF'
+[Layout]
+LayoutList=at
+Model=pc105
+Use=true
+VariantList=nodeadkeys
+EOF
+verbose "kxkbrc created successfully."
+
+# Create plasma-localerc file for user mss
+verbose "Creating plasma-localerc file for user mss."
+install -m 600 -o mss -g users /dev/stdin /home/mss/.config/plasma-localerc <<'EOF'
+[Formats]
+LANG=en_US.UTF-8
+LC_ADDRESS=de_AT.UTF-8
+LC_MEASUREMENT=de_AT.UTF-8
+LC_MONETARY=de_AT.UTF-8
+LC_NAME=de_AT.UTF-8
+LC_NUMERIC=de_AT.UTF-8
+LC_PAPER=de_AT.UTF-8
+LC_TELEPHONE=de_AT.UTF-8
+LC_TIME=de_AT.UTF-8
+EOF
+verbose "plasma-localerc created successfully."
+
 # Final instructions to exit and reboot
 verbose "Setup complete. To exit the chroot environment, type 'exit', and then reboot the system by typing 'reboot'."
