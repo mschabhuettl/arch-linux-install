@@ -239,7 +239,7 @@ verbose "Physical volume created."
 vgcreate vg /dev/mapper/cryptlvm
 verbose "Volume group 'vg' created."
 
-lvcreate -L 64G -n swap vg
+lvcreate -L 32G -n swap vg
 verbose "Logical volume 'swap' created (64G)."
 
 lvcreate -L 512G -n root vg
@@ -272,6 +272,10 @@ verbose "Home logical volume mounted on /mnt/home."
 
 swapon /dev/vg/swap
 verbose "Swap activated."
+
+# after creating LINUX_EFI_PART and LUKS_PART and before arch-chroot step:
+echo "$LINUX_EFI_PART" > /mnt/linux_efi_part.txt
+echo "$LUKS_PART"      > /mnt/luks_part.txt
 
 # Formatting and mounting EFI partition
 verbose "Formatting EFI partition..."
