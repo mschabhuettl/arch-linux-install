@@ -240,7 +240,7 @@ vgcreate vg /dev/mapper/cryptlvm
 verbose "Volume group 'vg' created."
 
 lvcreate -L 32G -n swap vg
-verbose "Logical volume 'swap' created (64G)."
+verbose "Logical volume 'swap' created (32G)."
 
 lvcreate -L 512G -n root vg
 verbose "Logical volume 'root' created (512G)."
@@ -320,11 +320,6 @@ verbose "fstab modified."
 verbose "Downloading the post-chroot script directly to /mnt/..."
 curl -fsSLo /mnt/01-post-chroot.sh https://raw.githubusercontent.com/mschabhuettl/arch-linux-install/refs/heads/main/nb-ws-mss/01-post-chroot.sh
 verbose "Post-chroot script downloaded to /mnt/."
-
-# Copy the target_disk.txt to /mnt/
-verbose "Copying target_disk.txt to /mnt/..."
-cp target_disk.txt /mnt/
-verbose "target_disk.txt copied to /mnt/."
 
 # Make the script executable
 verbose "Making the post-chroot script executable..."
