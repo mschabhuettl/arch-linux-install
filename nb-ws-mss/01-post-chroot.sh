@@ -51,14 +51,22 @@ verbose "CacheServer entries added."
 
 # Disk selection
 verbose "Reading target disk from target_disk.txt..."
-TARGET_DISK=$(cat target_disk.txt)
+TARGET_DISK=$(cat /target_disk.txt)
 verbose "Target disk set to $TARGET_DISK. Proceeding with the setup."
+
+# Read dynamically created partition paths from pre-chroot
+verbose "Reading LUKS/EFI partition paths created pre-chroot."
+LUKS_PART=$(cat /luks_part.txt)
+LINUX_EFI_PART=$(cat /linux_efi_part.txt)
+verbose "LUKS partition: $LUKS_PART"
+verbose "Linux EFI partition: $LINUX_EFI_PART"
 
 # Install and configure bootloader
 verbose "Installing bootloader and configuring entries."
 bootctl install
 
-UUID=$(blkid -s UUID -o value ${TARGET_DISK}p3)
+# Use the actual LUKS device for the UUID (instead of assuming ${TARGET_DISK}p3)
+UUID=$(blkid -s UUID -o value "$LUKS_PART")
 SWAP_UUID=$(blkid -s UUID -o value /dev/mapper/vg-swap)
 verbose "UUID of LUKS partition: $UUID"
 verbose "UUID of swap partition: $SWAP_UUID"
