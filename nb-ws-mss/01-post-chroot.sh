@@ -49,11 +49,6 @@ sed -i '/^\[core\]/,/^Include/ s|^Include.*|&\nCacheServer = http://192.168.112.
 sed -i '/^\[extra\]/,/^Include/ s|^Include.*|&\nCacheServer = http://192.168.112.103:9129/repo/archlinux/$repo/os/$arch|' /etc/pacman.conf
 verbose "CacheServer entries added."
 
-# Disk selection
-verbose "Reading target disk from target_disk.txt..."
-TARGET_DISK=$(cat /target_disk.txt)
-verbose "Target disk set to $TARGET_DISK. Proceeding with the setup."
-
 # Read dynamically created partition paths from pre-chroot
 verbose "Reading LUKS/EFI partition paths created pre-chroot."
 LUKS_PART=$(cat /luks_part.txt)
