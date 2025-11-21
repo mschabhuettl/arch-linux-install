@@ -108,12 +108,11 @@ verbose "Package database refreshed."
 
 # Install essential packages
 verbose "Installing essential packages."
-pacman -S plasma-meta kde-graphics-meta kde-multimedia-meta kde-network-meta kde-sdk-meta kde-system-meta kde-utilities-meta ttf-dejavu breeze xdg-user-dirs sddm pulseaudio pulseaudio-bluetooth firewalld ipset thunderbird firefox keepassxc bluez bluez-utils networkmanager-vpnc htop gimp vlc libreoffice-fresh gparted ntfs-3g git nm-connection-editor acpid dbus avahi cups nss-mdns chrony qt5-wayland android-tools scrcpy system-config-printer dosfstools tree tlp xdg-desktop-portal efibootmgr
+pacman -S plasma-meta kde-graphics-meta kde-multimedia-meta kde-network-meta kde-sdk-meta kde-system-meta kde-utilities-meta ttf-dejavu breeze xdg-user-dirs sddm pulseaudio pulseaudio-bluetooth firewalld ipset thunderbird firefox keepassxc bluez bluez-utils networkmanager-vpnc htop gimp vlc libreoffice-fresh gparted ntfs-3g git nm-connection-editor acpid dbus avahi cups nss-mdns chrony qt5-wayland android-tools scrcpy system-config-printer dosfstools tree tlp xdg-desktop-portal efibootmgr plymouth
 verbose "Essential packages installed."
 
 # Configure services
 verbose "Configuring services."
-sed -i 's/^#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 systemctl enable sshd.service
 systemctl enable NetworkManager.service
 sed -i 's/^#\s*--country/--country/' /etc/xdg/reflector/reflector.conf
