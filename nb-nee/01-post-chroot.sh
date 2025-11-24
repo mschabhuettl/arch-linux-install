@@ -23,14 +23,14 @@ verbose "Locales generated."
 
 echo "LANG=en_US.UTF-8" > /etc/locale.conf
 echo "KEYMAP=de-latin1-nodeadkeys" > /etc/vconsole.conf
-echo "NB-Nicola" > /etc/hostname
+echo "NB-Matthias" > /etc/hostname
 verbose "Locale, keymap, and hostname set."
 
 # Edit /etc/hosts
 verbose "Editing /etc/hosts."
 echo "127.0.0.1       localhost" >> /etc/hosts
 echo "::1             localhost" >> /etc/hosts
-echo "127.0.1.1       NB-Nicola" >> /etc/hosts
+echo "127.0.1.1       NB-Matthias" >> /etc/hosts
 verbose "/etc/hosts configured."
 
 # Generate initramfs
@@ -70,13 +70,13 @@ editor   no" > /boot/loader/loader.conf
 
 echo -e "title   Arch Linux
 linux   /vmlinuz-linux
-initrd  /intel-ucode.img
+initrd  /amd-ucode.img
 initrd  /initramfs-linux.img
 options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 ipv6.disable=1 quiet" > /boot/loader/entries/arch.conf
 
 echo -e "title   Arch Linux (fallback initramfs)
 linux   /vmlinuz-linux
-initrd  /intel-ucode.img
+initrd  /amd-ucode.img
 initrd  /initramfs-linux-fallback.img
 options rd.luks.name=$UUID=cryptlvm root=/dev/vg/root resume=UUID=$SWAP_UUID rd.luks.options=timeout=0 rootflags=x-systemd.device-timeout=0 vt.global_cursor_default=0 ipv6.disable=1 quiet" > /boot/loader/entries/arch-fallback.conf
 
@@ -108,12 +108,11 @@ verbose "Package database refreshed."
 
 # Install essential packages
 verbose "Installing essential packages."
-pacman -S plasma-meta ttf-dejavu breeze xdg-user-dirs sddm konsole pulseaudio pulseaudio-bluetooth firewalld ipset thunderbird firefox kwalletmanager keepassxc bluez bluez-utils networkmanager-vpnc dolphin dolphin-plugins ark htop gimp kate vlc libreoffice-fresh gwenview okular gparted ntfs-3g yakuake git nm-connection-editor acpid dbus avahi cups nss-mdns chrony qt5-wayland android-tools scrcpy system-config-printer kdialog dosfstools tree tlp xdg-desktop-portal efibootmgr sof-firmware
+pacman -S plasma-meta kde-graphics-meta kde-multimedia-meta kde-network-meta kde-sdk-meta kde-system-meta kde-utilities-meta ttf-dejavu breeze xdg-user-dirs sddm pulseaudio pulseaudio-bluetooth firewalld ipset thunderbird firefox keepassxc bluez bluez-utils networkmanager-vpnc htop gimp vlc libreoffice-fresh gparted ntfs-3g git nm-connection-editor acpid dbus avahi cups nss-mdns chrony qt5-wayland android-tools scrcpy system-config-printer dosfstools tree tlp xdg-desktop-portal efibootmgr plymouth
 verbose "Essential packages installed."
 
 # Configure services
 verbose "Configuring services."
-sed -i 's/^#PermitRootLogin.*/PermitRootLogin yes/' /etc/ssh/sshd_config
 systemctl enable sshd.service
 systemctl enable NetworkManager.service
 sed -i 's/^#\s*--country/--country/' /etc/xdg/reflector/reflector.conf
@@ -130,15 +129,15 @@ verbose "Services configured."
 
 # Create user and configure sudo
 verbose "Creating user and configuring sudo."
-useradd -m -g users -s /bin/zsh -u 1001 nee
-passwd nee
+useradd -m -g users -s /bin/zsh mss
+passwd mss
 sed -i 's/^#\s*%wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
-gpasswd -a nee wheel
-gpasswd -a nee audio
-gpasswd -a nee video
-gpasswd -a nee games
-gpasswd -a nee power
-verbose "User 'nee' created and configured."
+gpasswd -a mss wheel
+gpasswd -a mss audio
+gpasswd -a mss video
+gpasswd -a mss games
+gpasswd -a mss power
+verbose "User 'mss' created and configured."
 
 # Enable time synchronization
 verbose "Enabling time synchronization."
@@ -151,7 +150,7 @@ verbose "Installing Mesa drivers."
 pacman -S mesa
 verbose "Mesa drivers installed."
 
-sed -i 's/^MODULES=.*/MODULES=(i915)/' /etc/mkinitcpio.conf
+sed -i 's/^MODULES=.*/MODULES=(amdgpu)/' /etc/mkinitcpio.conf
 mkinitcpio -P
 
 # Install additional packages
@@ -171,6 +170,38 @@ verbose "Environment variables set."
 verbose "Enabling Firewalld service."
 systemctl enable firewalld.service
 verbose "Firewalld service enabled."
+
+# Create .config directory for user mss
+verbose "Creating /home/mss/.config directory."
+install -d -m 755 -o mss -g users /home/mss/.config
+verbose "/home/mss/.config directory created."
+
+# Create kxkbrc keyboard layout configuration for user mss
+verbose "Creating kxkbrc keyboard layout configuration."
+install -m 600 -o mss -g users /dev/stdin /home/mss/.config/kxkbrc <<'EOF'
+[Layout]
+LayoutList=at
+Model=pc105
+Use=true
+VariantList=nodeadkeys
+EOF
+verbose "kxkbrc created successfully."
+
+# Create plasma-localerc file for user mss
+verbose "Creating plasma-localerc file for user mss."
+install -m 600 -o mss -g users /dev/stdin /home/mss/.config/plasma-localerc <<'EOF'
+[Formats]
+LANG=en_US.UTF-8
+LC_ADDRESS=de_AT.UTF-8
+LC_MEASUREMENT=de_AT.UTF-8
+LC_MONETARY=de_AT.UTF-8
+LC_NAME=de_AT.UTF-8
+LC_NUMERIC=de_AT.UTF-8
+LC_PAPER=de_AT.UTF-8
+LC_TELEPHONE=de_AT.UTF-8
+LC_TIME=de_AT.UTF-8
+EOF
+verbose "plasma-localerc created successfully."
 
 # Final instructions to exit and reboot
 verbose "Setup complete. To exit the chroot environment, type 'exit', and then reboot the system by typing 'reboot'."
