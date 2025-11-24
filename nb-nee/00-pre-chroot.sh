@@ -141,8 +141,8 @@ verbose "Physical volume created."
 vgcreate vg /dev/mapper/cryptlvm
 verbose "Volume group 'vg' created."
 
-lvcreate -L 32G -n swap vg
-verbose "Logical volume 'swap' created (32G)."
+lvcreate -L 64G -n swap vg
+verbose "Logical volume 'swap' created (64G)."
 
 lvcreate -L 512G -n root vg
 verbose "Logical volume 'root' created (512G)."
@@ -201,7 +201,7 @@ verbose "Package database refreshed."
 
 # Base installation (Base, Linux Kernel, Firmware)
 verbose "Starting base installation..."
-pacstrap -K /mnt base base-devel linux linux-firmware lvm2 networkmanager iwd openssh tmux nano vi vim intel-ucode man-db man-pages texinfo reflector bash-completion zsh zsh-completions nvme-cli
+pacstrap -K /mnt base base-devel linux linux-firmware lvm2 networkmanager iwd openssh tmux nano vi vim amd-ucode man-db man-pages texinfo reflector bash-completion zsh zsh-completions nvme-cli
 verbose "Base and additional package installation complete."
 
 # Generate fstab
@@ -216,7 +216,7 @@ verbose "fstab modified."
 
 # Download the post-chroot script directly to /mnt/
 verbose "Downloading the post-chroot script directly to /mnt/..."
-curl -fsSLo /mnt/01-post-chroot.sh https://raw.githubusercontent.com/mschabhuettl/arch-linux-install/refs/heads/main/nb-nee/01-post-chroot.sh
+curl -fsSLo /mnt/01-post-chroot.sh https://raw.githubusercontent.com/mschabhuettl/arch-linux-install/refs/heads/main/nb/01-post-chroot.sh
 verbose "Post-chroot script downloaded to /mnt/."
 
 # Copy the target_disk.txt to /mnt/
