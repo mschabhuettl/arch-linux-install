@@ -180,7 +180,7 @@ verbose "Formatting EFI partition..."
 mkfs.fat -F32 ${TARGET_DISK}p2
 verbose "Formatted EFI partition as FAT32."
 
-mount --mkdir ${TARGET_DISK}p2 /mnt/boot
+mount -o fmask=0137,dmask=0027 --mkdir ${TARGET_DISK}p2 /mnt/boot
 verbose "EFI partition mounted on /mnt/boot."
 
 # Add a CacheServer entry after the Include line in the [core] and [extra] sections
