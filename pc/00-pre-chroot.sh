@@ -209,11 +209,11 @@ verbose "Generating fstab..."
 genfstab -U /mnt >> /mnt/etc/fstab
 verbose "fstab generated."
 
-# Modify fstab to replace 'relatime' with 'noatime' and fix EFI mount options
-verbose "Modifying fstab: replacing 'relatime' with 'noatime' and updating EFI fmask/dmask..."
+# Modify fstab: replace 'relatime' with 'noatime' and enforce EFI fmask/dmask
+verbose "Modifying fstab: replacing 'relatime' with 'noatime' and enforcing EFI fmask/dmask..."
 sed -i 's/relatime/noatime/g' /mnt/etc/fstab
 sed -i '/\/boot/ s/fmask=[0-9]\{4\}/fmask=0137/; s/dmask=[0-9]\{4\}/dmask=0027/' /mnt/etc/fstab
-verbose "fstab updated (noatime + EFI fmask/dmask).
+verbose "fstab updated (noatime + EFI fmask=0137, dmask=0027)."
 
 # Download the post-chroot script directly to /mnt/
 verbose "Downloading the post-chroot script directly to /mnt/..."
