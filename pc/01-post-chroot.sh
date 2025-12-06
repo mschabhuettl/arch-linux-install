@@ -8,10 +8,17 @@ verbose() {
   echo -e "\033[1;32m[INFO]\033[0m $1"
 }
 
+# Pre-setup: Set timezone and NTP
+verbose "Setting up timezone and NTP."
+timedatectl set-timezone Europe/Vienna
+verbose "Timezone set to Europe/Vienna."
+timedatectl set-ntp true
+verbose "NTP enabled."
+
 # Set timezone and hardware clock
 verbose "Setting timezone and hardware clock."
 ln -sf /usr/share/zoneinfo/Europe/Vienna /etc/localtime
-hwclock --systohc
+hwclock --utc --systohc
 verbose "Timezone and hardware clock set."
 
 # Generate locales
