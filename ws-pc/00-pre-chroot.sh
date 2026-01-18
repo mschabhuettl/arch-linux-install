@@ -120,7 +120,7 @@ vgcreate vg /dev/mapper/cryptlvm
 verbose "Volume group 'vg' created."
 
 lvcreate -L 32G -n swap vg
-verbose "Logical volume 'swap' created (256G)."
+verbose "Logical volume 'swap' created (32G)."
 
 lvcreate -L 512G -n root vg
 verbose "Logical volume 'root' created (512G)."
