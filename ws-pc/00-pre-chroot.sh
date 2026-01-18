@@ -63,7 +63,7 @@ select_drives() {
 }
 
 # Secure erase for ATA/SATA drives (sdX) via hdparm
-secure_erase_nvme() {
+secure_erase() {
     local device=$(normalize_drive "$1")
     local security_password="PasSWorD"
 
@@ -74,11 +74,18 @@ secure_erase_nvme() {
 # Get user selection
 select_drives
 
+# Wipe existing filesystem/RAID signatures on selected drives
+for drive in "${selected_drives[@]}"; do
+    drive=$(normalize_drive "$drive")
+    validate_drive "$drive"
+    execute_command "wipefs --all $drive"
+done
+
 # Loop through selected drives and perform secure erase
 for drive in "${selected_drives[@]}"; do
     drive=$(normalize_drive "$drive")
     validate_drive "$drive"
-    secure_erase_nvme "$drive"
+    secure_erase "$drive"
 done
 
 verbose "Secure erase completed successfully."
