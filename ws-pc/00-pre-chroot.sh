@@ -63,13 +63,13 @@ select_drives() {
 }
 
 # Secure erase for ATA/SATA drives (sdX) via hdparm
-secure_erase() {
-    local device=$(normalize_drive "$1")
-    local security_password="PasSWorD"
-
-    execute_command "hdparm --user-master u --security-set-pass $security_password $device"
-    execute_command "hdparm --user-master u --security-erase-enhanced $security_password $device"
-}
+#secure_erase() {
+#    local device=$(normalize_drive "$1")
+#    local security_password="PasSWorD"
+#
+#    execute_command "hdparm --user-master u --security-set-pass $security_password $device"
+#    execute_command "hdparm --user-master u --security-erase-enhanced $security_password $device"
+#}
 
 # Get user selection
 select_drives
@@ -85,7 +85,7 @@ done
 for drive in "${selected_drives[@]}"; do
     drive=$(normalize_drive "$drive")
     validate_drive "$drive"
-    secure_erase "$drive"
+#    secure_erase "$drive"
 done
 
 verbose "Secure erase completed successfully."
