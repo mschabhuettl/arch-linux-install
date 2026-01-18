@@ -58,7 +58,7 @@ verbose "Target disk set to $TARGET_DISK. Proceeding with the setup."
 verbose "Installing bootloader and configuring entries."
 bootctl install
 
-UUID=$(blkid -s UUID -o value ${TARGET_DISK}p3)
+UUID=$(blkid -s UUID -o value ${TARGET_DISK}3)
 SWAP_UUID=$(blkid -s UUID -o value /dev/mapper/vg-swap)
 verbose "UUID of LUKS partition: $UUID"
 verbose "UUID of swap partition: $SWAP_UUID"
