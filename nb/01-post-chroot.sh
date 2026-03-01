@@ -150,8 +150,11 @@ verbose "Installing Mesa drivers."
 pacman -S mesa
 verbose "Mesa drivers installed."
 
-sed -i 's/^MODULES=.*/MODULES=(amdgpu)/' /etc/mkinitcpio.conf
+# Adding MODULES to initramfs
+verbose "Adding MODULES to initramfs."
+sed -i 's/^MODULES=.*/MODULES=(amdgpu vfat fat)/' /etc/mkinitcpio.conf
 mkinitcpio -P
+verbose "MODULES added."
 
 # Install additional packages
 verbose "Installing additional packages."
