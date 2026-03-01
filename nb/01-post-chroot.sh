@@ -108,7 +108,7 @@ verbose "Package database refreshed."
 
 # Install essential packages
 verbose "Installing essential packages."
-pacman -S plasma-meta kde-graphics-meta kde-multimedia-meta kde-network-meta kde-sdk-meta kde-system-meta kde-utilities-meta ttf-dejavu breeze xdg-user-dirs plasma-login-manager pulseaudio pulseaudio-bluetooth firewalld ipset thunderbird firefox keepassxc bluez bluez-utils networkmanager-vpnc htop gimp vlc libreoffice-fresh gparted ntfs-3g git nm-connection-editor acpid dbus avahi cups nss-mdns chrony qt5-wayland android-tools scrcpy system-config-printer dosfstools tree tlp xdg-desktop-portal efibootmgr plymouth rsync openconnect efitools sbsigntools sbctl tcpdump usbutils cdrtools libisoburn cdrdao libburn dvd+rw-tools ccd2iso sox libcdio audiocd-kio k3b libdvdread libdvdcss libdvdnav libaacs libbluray
+pacman -S plasma-meta kde-graphics-meta kde-multimedia-meta kde-network-meta kde-sdk-meta kde-system-meta kde-utilities-meta ttf-dejavu breeze xdg-user-dirs plasma-login-manager pulseaudio pulseaudio-bluetooth firewalld ipset thunderbird firefox keepassxc bluez bluez-utils networkmanager-vpnc htop gimp vlc libreoffice-fresh gparted ntfs-3g git nm-connection-editor acpid dbus avahi cups nss-mdns chrony qt5-wayland android-tools scrcpy system-config-printer dosfstools tree tlp xdg-desktop-portal efibootmgr plymouth rsync networkmanager-openconnect efitools sbsigntools sbctl tcpdump usbutils cdrtools libisoburn cdrdao libburn dvd+rw-tools ccd2iso sox libcdio audiocd-kio k3b libdvdread libdvdcss libdvdnav libaacs libbluray
 verbose "Essential packages installed."
 
 # Configure services
