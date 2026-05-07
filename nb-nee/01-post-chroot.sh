@@ -129,7 +129,7 @@ verbose "Services configured."
 
 # Create user and configure sudo
 verbose "Creating user and configuring sudo."
-useradd -m -g users -s /bin/zsh  -u 1001 nee
+useradd -m -g users -s /bin/zsh -u 1001 nee
 passwd nee
 sed -i 's/^#\s*%wheel ALL=(ALL:ALL) ALL/%wheel ALL=(ALL:ALL) ALL/' /etc/sudoers
 gpasswd -a nee wheel
