@@ -180,7 +180,7 @@ verbose "Formatting EFI partition..."
 mkfs.fat -F32 ${TARGET_DISK}p2
 verbose "Formatted EFI partition as FAT32."
 
-mount --mkdir ${TARGET_DISK}p2 /mnt/boot
+mount -t vfat -o fmask=0137,dmask=0027 --mkdir ${TARGET_DISK}p2 /mnt/boot
 verbose "EFI partition mounted on /mnt/boot."
 
 # Add a CacheServer entry after the Include line in the [core] and [extra] sections
@@ -209,10 +209,11 @@ verbose "Generating fstab..."
 genfstab -U /mnt >> /mnt/etc/fstab
 verbose "fstab generated."
 
-# Modify fstab to replace 'relatime' with 'noatime'
-verbose "Modifying fstab to replace 'relatime' with 'noatime'..."
+# Modify fstab: replace 'relatime' with 'noatime' and enforce EFI fmask/dmask
+verbose "Modifying fstab: replacing 'relatime' with 'noatime' and enforcing EFI fmask/dmask..."
 sed -i 's/relatime/noatime/g' /mnt/etc/fstab
-verbose "fstab modified."
+sed -i '/\/boot/ s/fmask=[0-9]\{4\}/fmask=0137/; s/dmask=[0-9]\{4\}/dmask=0027/' /mnt/etc/fstab
+verbose "fstab updated (noatime + EFI fmask=0137, dmask=0027)."
 
 # Download the post-chroot script directly to /mnt/
 verbose "Downloading the post-chroot script directly to /mnt/..."
