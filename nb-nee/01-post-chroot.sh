@@ -11,7 +11,7 @@ verbose() {
 # Set timezone and hardware clock
 verbose "Setting timezone and hardware clock."
 ln -sf /usr/share/zoneinfo/Europe/Vienna /etc/localtime
-hwclock --systohc
+hwclock --utc --systohc
 verbose "Timezone and hardware clock set."
 
 # Generate locales
