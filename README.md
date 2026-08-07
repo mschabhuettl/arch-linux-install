@@ -57,15 +57,18 @@ hosts/nb.env               NB-Matthias (laptop, AMD iGPU)
 
 ## Usage
 
-On the Arch live ISO:
+On the Arch live ISO (curl, tar and jq are already included, nothing to
+install first):
 
 ```
-pacman -Sy git           # git is not on the live ISO (jq already is)
-git clone https://github.com/mschabhuettl/arch-linux-install.git
-cd arch-linux-install
-git checkout <tag-or-commit>    # pin the revision you reviewed
+curl -L https://github.com/mschabhuettl/arch-linux-install/archive/<tag-or-commit>.tar.gz | tar xz
+cd arch-linux-install-*/
 ./common/00-pre-chroot.sh pc    # or: nb
 ```
+
+Set `<tag-or-commit>` to the revision you reviewed; the tarball content is
+fully determined by that ref, unlike fetching from a branch. Alternatively
+clone with git (`pacman -Sy git` first, git is not on the live ISO).
 
 Answer the prompts. At the end the script offers to run `01-post-chroot.sh`
 inside `arch-chroot` automatically (default: yes). Afterwards:
