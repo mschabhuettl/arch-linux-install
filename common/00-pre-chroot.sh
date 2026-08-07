@@ -43,7 +43,7 @@ source "$HOST_ENV"
 require_root
 require_tools timedatectl nvme jq sgdisk cryptsetup pvcreate vgcreate \
   lvcreate lvreduce mkfs.ext4 mkfs.fat mkswap reflector pacstrap genfstab \
-  arch-chroot lsblk
+  arch-chroot lsblk udevadm partprobe
 require_vars VG_NAME TIMEZONE CACHE_SERVER REFLECTOR_COUNTRIES \
   SANITIZE_TIMEOUT PACSTRAP_PKGS HOSTNAME SWAP_SIZE ROOT_SIZE UCODE
 
@@ -171,6 +171,14 @@ verbose "Created EFI system partition (1G, type ef00)."
 run sgdisk -n 3:0:0 -t 3:8309 "$TARGET_DISK"
 verbose "Created LUKS partition (remaining space, type 8309)."
 run sync
+# sgdisk only asks the kernel to re-read the partition table; udev creates the
+# /dev/...p3 node asynchronously. Wait for it, otherwise cryptsetup below can
+# race ahead and fail with "device does not exist" on a freshly wiped disk.
+run partprobe "$TARGET_DISK"
+run udevadm settle
+if [[ ! -b "${TARGET_DISK}p3" ]]; then
+  die "Partition node ${TARGET_DISK}p3 did not appear after partitioning."
+fi
 verbose "Partitioning of $TARGET_DISK complete."
 
 # --- LUKS + LVM --------------------------------------------------------------
