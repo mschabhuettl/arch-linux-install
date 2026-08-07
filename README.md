@@ -60,7 +60,7 @@ hosts/nb.env               NB-Matthias (laptop, AMD iGPU)
 On the Arch live ISO:
 
 ```
-pacman -Sy git jq        # if missing on the ISO; jq is required by 00
+pacman -Sy git           # git is not on the live ISO (jq already is)
 git clone https://github.com/mschabhuettl/arch-linux-install.git
 cd arch-linux-install
 git checkout <tag-or-commit>    # pin the revision you reviewed
