@@ -61,14 +61,12 @@ On the Arch live ISO (curl, tar and jq are already included, nothing to
 install first):
 
 ```
-curl -L https://github.com/mschabhuettl/arch-linux-install/archive/<tag-or-commit>.tar.gz | tar xz
-cd arch-linux-install-*/
-./common/00-pre-chroot.sh pc    # or: nb
+curl -L https://github.com/mschabhuettl/arch-linux-install/archive/main.tar.gz | tar xz --strip-components=1 && ./common/00-pre-chroot.sh pc
 ```
 
-Set `<tag-or-commit>` to the revision you reviewed; the tarball content is
-fully determined by that ref, unlike fetching from a branch. Alternatively
-clone with git (`pacman -Sy git` first, git is not on the live ISO).
+Use `nb` instead of `pc` for the laptop. This runs whatever is currently on
+main; put a tag or commit in the archive URL instead if you ever need a
+fixed revision.
 
 Answer the prompts. At the end the script offers to run `01-post-chroot.sh`
 inside `arch-chroot` automatically (default: yes). Afterwards:
