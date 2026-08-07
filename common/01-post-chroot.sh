@@ -294,14 +294,18 @@ LC_TIME=de_AT.UTF-8
 EOF
 
 # --- ssh hardening -----------------------------------------------------------
-verbose "Writing SSH hardening drop-in (key-only login)."
+# PasswordAuthentication is left commented out for now so you can copy files
+# over with a password during initial setup. Uncomment the line (or set it to
+# no) once your public key is deployed to lock SSH down to key-only logins.
+verbose "Writing SSH drop-in (password login still enabled for initial setup)."
 run install -d -m 755 /etc/ssh/sshd_config.d
 cat > /etc/ssh/sshd_config.d/10-hardening.conf <<'EOF'
-PasswordAuthentication no
+# PasswordAuthentication no
 PermitRootLogin no
 EOF
 
 verbose "Post-chroot setup complete."
-verbose "Reminder: SSH allows key-based logins only. Deploy your public key to"
-verbose "/home/$USERNAME/.ssh/authorized_keys before relying on remote access."
+verbose "Reminder: SSH password login is still ON. After deploying your key to"
+verbose "/home/$USERNAME/.ssh/authorized_keys, uncomment PasswordAuthentication no"
+verbose "in /etc/ssh/sshd_config.d/10-hardening.conf and restart sshd."
 verbose "plasmalogin.service is enabled; the system boots into the greeter."

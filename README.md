@@ -54,7 +54,8 @@ hosts/nb-nee.env           NB-Nicola (laptop, Intel iGPU)
   services on nvidia hosts.
 - sudo via a validated `/etc/sudoers.d/` drop-in, user creation with zsh,
   XDG user directories, pam_env XDG base dirs, KDE keyboard and locale
-  defaults, SSH hardened to key-only logins.
+  defaults, root login over SSH disabled (password auth left on for initial
+  setup, ready to switch to key-only).
 
 ## Usage
 
@@ -100,8 +101,10 @@ per host, see `hosts/nb-nee.env`.
 
 ## Notes
 
-- SSH allows key-based logins only (`PasswordAuthentication no`,
-  `PermitRootLogin no`). Deploy a public key before relying on remote access.
+- SSH root login is disabled (`PermitRootLogin no`). Password authentication
+  is left enabled for initial file transfers; `PasswordAuthentication no` sits
+  commented out in `/etc/ssh/sshd_config.d/10-hardening.conf`. After deploying
+  your public key, uncomment it and restart sshd to go key-only.
 - pacman runs interactively by design; answer its prompts.
 - `01-post-chroot.sh` is not idempotent. If it fails mid-run, fix the issue
   and continue manually via `arch-chroot /mnt` (the staged files are kept at
