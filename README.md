@@ -16,6 +16,7 @@ common/lib.sh              shared helpers (logging, run, cache server, checks)
 common/defaults.env        shared constants and package sets
 hosts/pc.env               PC-Matthias (desktop, NVIDIA, 10GbE)
 hosts/nb.env               NB-Matthias (laptop, AMD iGPU)
+hosts/nb-nee.env           NB-Nicola (laptop, Intel iGPU)
 ```
 
 ## What the scripts do
@@ -41,11 +42,11 @@ hosts/nb.env               NB-Matthias (laptop, AMD iGPU)
 
 - Timezone, locales, keymap, hostname, hosts file, root password.
 - systemd-boot with hibernation support (`resume=`), boot entries built from
-  the host config, pacman hook for bootloader updates.
+  the host config (including the amd/intel microcode initrd), pacman hook for bootloader updates.
 - One interactive pacman transaction: KDE Plasma, applications, and the
   GPU / power / timesync packages selected by the host env.
-- mkinitcpio configured once (systemd hooks, sd-encrypt, `kms` only on
-  amdgpu, NVIDIA modules and power management options on nvidia) with a
+- mkinitcpio configured once (systemd hooks, sd-encrypt, `kms` on
+  amdgpu and intel, NVIDIA modules and power management options on nvidia) with a
   single `mkinitcpio -P`.
 - Services: sshd, NetworkManager, plasmalogin (SDDM successor), firewalld,
   cups, avahi with mdns_minimal, bluetooth, fstrim.timer, reflector.timer,
@@ -85,7 +86,8 @@ Per-host switches in `hosts/<host>.env`:
 | `HOSTNAME`      | System hostname                                      |
 | `SWAP_SIZE`     | Swap LV size (sized for hibernation)                 |
 | `ROOT_SIZE`     | Root LV size (home gets the rest)                    |
-| `GPU`           | `nvidia` or `amdgpu`                                 |
+| `UCODE`         | `amd` or `intel` (microcode package + boot entries)  |
+| `GPU`           | `nvidia`, `amdgpu` or `intel`                        |
 | `TIMESYNC`      | `timesyncd` or `chrony`                              |
 | `POWER`         | `ppd` (power-profiles-daemon) or `tlp`               |
 | `MODULES_EXTRA` | Extra initramfs modules (e.g. NIC drivers)           |
@@ -93,7 +95,8 @@ Per-host switches in `hosts/<host>.env`:
 | `CMDLINE_EXTRA` | Appended to the kernel command line                  |
 
 Shared constants (user name, VG name, timezone, cache server, package sets)
-live in `common/defaults.env`.
+live in `common/defaults.env`. `USERNAME` and `USER_UID` can be overridden
+per host, see `hosts/nb-nee.env`.
 
 ## Notes
 

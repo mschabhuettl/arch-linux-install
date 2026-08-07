@@ -45,7 +45,12 @@ require_tools timedatectl nvme jq sgdisk cryptsetup pvcreate vgcreate \
   lvcreate lvreduce mkfs.ext4 mkfs.fat mkswap reflector pacstrap genfstab \
   arch-chroot lsblk
 require_vars VG_NAME TIMEZONE CACHE_SERVER REFLECTOR_COUNTRIES \
-  SANITIZE_TIMEOUT PACSTRAP_PKGS HOSTNAME SWAP_SIZE ROOT_SIZE
+  SANITIZE_TIMEOUT PACSTRAP_PKGS HOSTNAME SWAP_SIZE ROOT_SIZE UCODE
+
+case "$UCODE" in
+  amd|intel) ;;
+  *) die "Unknown UCODE '$UCODE' (expected amd or intel)." ;;
+esac
 
 verbose "Installing host '$HOST' ($HOSTNAME)."
 
@@ -212,7 +217,7 @@ verbose "Refreshing package databases..."
 run pacman -Syy
 
 verbose "Installing the base system with pacstrap..."
-run pacstrap -K /mnt "${PACSTRAP_PKGS[@]}"
+run pacstrap -K /mnt "${PACSTRAP_PKGS[@]}" "${UCODE}-ucode"
 
 # --- fstab -------------------------------------------------------------------
 verbose "Generating fstab..."

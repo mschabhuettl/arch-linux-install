@@ -25,11 +25,17 @@ source "$SCRIPT_DIR/state.env"
 require_root
 require_vars USERNAME VG_NAME TIMEZONE KEYMAP LOCALE_LANG GEN_LOCALES \
   CACHE_SERVER REFLECTOR_COUNTRIES COMMON_PKGS HOSTNAME SWAP_SIZE ROOT_SIZE \
-  GPU TIMESYNC POWER MODULES_EXTRA EXTRA_PKGS CMDLINE_EXTRA TARGET_DISK HOST
+  GPU TIMESYNC POWER MODULES_EXTRA EXTRA_PKGS CMDLINE_EXTRA TARGET_DISK HOST \
+  UCODE
 
 verbose "Running post-chroot setup for host '$HOST' ($HOSTNAME) on $TARGET_DISK."
 
 # --- host switches -> concrete settings --------------------------------------
+case "$UCODE" in
+  amd|intel) ;;
+  *) die "Unknown UCODE '$UCODE' (expected amd or intel)." ;;
+esac
+
 case "$GPU" in
   nvidia)
     GPU_PKGS=(nvidia-open-dkms)
@@ -44,8 +50,14 @@ case "$GPU" in
     GPU_CMDLINE=""
     USE_KMS_HOOK=1
     ;;
+  intel)
+    GPU_PKGS=(mesa)
+    GPU_MODULES=(i915)
+    GPU_CMDLINE=""
+    USE_KMS_HOOK=1
+    ;;
   *)
-    die "Unknown GPU '$GPU' (expected nvidia or amdgpu)."
+    die "Unknown GPU '$GPU' (expected nvidia, amdgpu or intel)."
     ;;
 esac
 
@@ -127,7 +139,7 @@ EOF
 cat > /boot/loader/entries/arch.conf <<EOF
 title   Arch Linux
 linux   /vmlinuz-linux
-initrd  /amd-ucode.img
+initrd  /${UCODE}-ucode.img
 initrd  /initramfs-linux.img
 options $CMDLINE
 EOF
@@ -135,7 +147,7 @@ EOF
 cat > /boot/loader/entries/arch-fallback.conf <<EOF
 title   Arch Linux (fallback initramfs)
 linux   /vmlinuz-linux
-initrd  /amd-ucode.img
+initrd  /${UCODE}-ucode.img
 initrd  /initramfs-linux-fallback.img
 options $CMDLINE
 EOF
@@ -231,7 +243,11 @@ rm -f "$sudoers_tmp"
 
 # --- user --------------------------------------------------------------------
 verbose "Creating user '$USERNAME'."
-run useradd -m -g users -G wheel,audio,video,games,power -s /bin/zsh "$USERNAME"
+useradd_args=(-m -g users -G "wheel,audio,video,games,power" -s /bin/zsh)
+if [[ -n "${USER_UID:-}" ]]; then
+  useradd_args+=(-u "$USER_UID")
+fi
+run useradd "${useradd_args[@]}" "$USERNAME"
 verbose "Setting password for '$USERNAME'."
 run passwd "$USERNAME"
 
