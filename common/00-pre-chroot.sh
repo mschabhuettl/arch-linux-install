@@ -75,13 +75,16 @@ check_nvme_sanitize() {
   local deadline=$(( SECONDS + SANITIZE_TIMEOUT ))
   local output sprog sstat status
   while true; do
-    if ! output=$(nvme sanitize-log "$device" -o json 2>/dev/null); then
+    if ! output=$(nvme sanitize-log "$device" 2>/dev/null); then
       die "Failed to read sanitize log for $device."
     fi
-    sprog=$(jq -r '.sprog // empty' <<<"$output")
-    sstat=$(jq -r '.sstat // empty' <<<"$output")
+    # Parse the human-readable output: its "Sanitize Progress (SPROG)" and
+    # "Sanitize Status (SSTAT)" lines are stable across nvme-cli versions,
+    # unlike the JSON key names. SPROG is decimal, SSTAT is hex (e.g. 0x101).
+    sprog=$(sed -n 's/.*Sanitize Progress.*:[[:space:]]*\([0-9][0-9]*\).*/\1/p' <<<"$output")
+    sstat=$(sed -n 's/.*Sanitize Status.*:[[:space:]]*\(0x[0-9a-fA-F][0-9a-fA-F]*\).*/\1/p' <<<"$output")
     if [[ -z "$sprog" || -z "$sstat" ]]; then
-      die "Sanitize log for $device is missing sprog/sstat (unexpected nvme-cli JSON)."
+      die "Could not read SPROG/SSTAT from sanitize log for $device."
     fi
     # SSTAT bits 2:0 - 1: completed, 2: in progress, 3: failed,
     # 4: completed (no-deallocate). SPROG 65535 means 100%.
